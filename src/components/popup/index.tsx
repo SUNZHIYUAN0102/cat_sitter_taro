@@ -8,9 +8,6 @@ interface PopupProps {
 }
 
 const Popup: React.FC<PopupProps> = ({ visible, children, handlePopup }) => {
-    console.log(visible);
-
-
     if (!visible) return null;
 
     return <View className="fixed top-0 left-0 w-[100%] h-[100%] bg-black bg-opacity-70 z-[100] flex justify-center items-center" onClick={() => { handlePopup(false); }}>
