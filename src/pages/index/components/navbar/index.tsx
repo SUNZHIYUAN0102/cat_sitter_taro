@@ -2,14 +2,20 @@ import { View, Image, Text } from "@tarojs/components";
 import icon from "@/resources/icon.svg"
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
+import SignInPopup from "../signInPopup";
+import SignUpPopup from "../signUpPopup";
+import { useState } from "react";
+import Taro from "@tarojs/taro";
 
 interface NavBarProps {
-    handleSignInPopup: (visible: boolean) => void
-    handleSignUpPopup: (visible: boolean) => void
+
 }
 
-const NavBar: React.FC<NavBarProps> = ({ handleSignInPopup, handleSignUpPopup }) => {
+const NavBar: React.FC<NavBarProps> = () => {
     const user = useSelector((state: RootState) => state.user)
+
+    const [signInPopupVisible, setSignInPopupVisible] = useState(false)
+    const [signUpPopupVisible, setSignUpPopupVisible] = useState(false)
 
     const RenderUserPart = (): JSX.Element => {
         if (user.token) {
@@ -19,19 +25,25 @@ const NavBar: React.FC<NavBarProps> = ({ handleSignInPopup, handleSignUpPopup })
             </View>
         } else {
             return <View className="flex items-center gap-[5px]">
-                <View className="p-[5px] rounded-sm text-[8px] leading-[1] hover:bg-neutral-200 transition-all cursor-pointer" onClick={() => { handleSignInPopup(true) }}>
+                <View className="p-[5px] rounded-sm text-[8px] leading-[1] hover:bg-neutral-200 transition-all cursor-pointer" onClick={() => { setSignInPopupVisible(true) }}>
                     Sign In
                 </View>
 
-                <View className="p-[5px] rounded-sm bg-orange-400 text-white text-[8px] leading-[1] hover:bg-orange-500 transition-all cursor-pointer" onClick={() => { handleSignUpPopup(true) }}>
+                <View className="p-[5px] rounded-sm bg-orange-400 text-white text-[8px] leading-[1] hover:bg-orange-500 transition-all cursor-pointer" onClick={() => { setSignUpPopupVisible(true) }}>
                     Sign Up
                 </View>
             </View>
         }
     }
 
+    const toMainPage = () => {
+        Taro.reLaunch({
+            url: '/pages/index/index'
+        })
+    }
+
     return <View className="sticky top-0 w-[100%] h-[50px] bg-white px-[10%] flex justify-between items-center z-50">
-        <Image className="w-[110px] h-[25px]" src={icon}></Image>
+        <Image onClick={toMainPage} className="w-[110px] h-[25px] cursor-pointer" src={icon}></Image>
 
         <View className="flex items-center gap-[20px]">
             <View className="mx-[20px] flex items-center gap-[15px] text-[10px] text-neutral-700">
@@ -45,6 +57,9 @@ const NavBar: React.FC<NavBarProps> = ({ handleSignInPopup, handleSignUpPopup })
         </View>
 
         {RenderUserPart()}
+
+        <SignInPopup visible={signInPopupVisible} handlePopup={setSignInPopupVisible}></SignInPopup>
+        <SignUpPopup visible={signUpPopupVisible} handlePopup={setSignUpPopupVisible}></SignUpPopup>
     </View>
 }
 

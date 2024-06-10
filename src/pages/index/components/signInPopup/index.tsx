@@ -1,8 +1,11 @@
 import Popup from "@/components/popup";
+import { setUser } from "@/store/slices/user/user";
+import { AppDispatch } from "@/store/store";
 import emailValidate from "@/utils/emailValidate";
 import passwordValidate from "@/utils/passwordValidate";
 import { Input, View, Text } from "@tarojs/components";
 import { PropsWithChildren, useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 
 
 interface SignInPopupProps {
@@ -11,6 +14,8 @@ interface SignInPopupProps {
 }
 
 const SignInPopup: React.FC<SignInPopupProps> = ({ visible, handlePopup }) => {
+    const dispatch: AppDispatch = useDispatch()
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [passwordError, setPasswordError] = useState('');
@@ -43,6 +48,16 @@ const SignInPopup: React.FC<SignInPopupProps> = ({ visible, handlePopup }) => {
         setPasswordError('');
     }, [visible])
 
+    const handleSignIn = () => {        
+        dispatch(setUser({
+            name: 'littleyuanyuan',
+            avatar: 'https://picsum.photos/id/1/40/40',
+            token: "123"
+        }))
+
+        handlePopup(false)
+    }
+
     return <Popup visible={visible} handlePopup={handlePopup}>
         <View className='flex flex-col items-center gap-[15px]'>
             <Text className="text-orange-400 text-[25px] font-bold font-['Pacifico']">Sign In</Text>
@@ -72,7 +87,7 @@ const SignInPopup: React.FC<SignInPopupProps> = ({ visible, handlePopup }) => {
                 />
             </View>
 
-            <View className="w-[100px] py-[6px] rounded-lg bg-orange-600 flex justify-center items-center text-white text-[10px] cursor-pointer">
+            <View onClick={handleSignIn} className="w-[100px] py-[6px] rounded-lg bg-orange-600 flex justify-center items-center text-white text-[10px] cursor-pointer">
                 Sign In
             </View>
         </View>

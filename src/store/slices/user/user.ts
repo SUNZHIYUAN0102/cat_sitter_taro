@@ -7,15 +7,26 @@ interface UserState {
 }
 
 const initialState: UserState = {
-    name: 'littleyuanyuan',
-    avatar: 'https://picsum.photos/id/1/40/40',
-    token: '123'
+    name: '',
+    avatar: '',
+    token: ''
 }
 
 export const UserSlice = createSlice({
     name: 'user',
     initialState,
     reducers: {
-
+        setUser: (state, action) => {
+            state.name = action.payload.name;
+            state.avatar = action.payload.avatar;
+            state.token = action.payload.token;
+        },
+        clearUser: (state) => {
+            state.name = '';
+            state.avatar = '';
+            state.token = '';
+        }
     }
 })
+
+export const { setUser, clearUser } = UserSlice.actions;
