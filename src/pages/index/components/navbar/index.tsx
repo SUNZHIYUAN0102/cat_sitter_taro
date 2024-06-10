@@ -7,7 +7,7 @@ interface NavBarProps {
 }
 
 const NavBar: React.FC<NavBarProps> = ({ handleSignInPopup, handleSignUpPopup }) => {
-    return <View className="fixed top-0 w-[100%] h-[50px] bg-white px-[10%] flex justify-between items-center z-50">
+    return <View className="sticky top-0 w-[100%] h-[50px] bg-white px-[10%] flex justify-between items-center z-50">
         <Image className="w-[110px] h-[25px]" src={icon}></Image>
 
         <View className="flex items-center gap-[20px]">
@@ -17,6 +17,7 @@ const NavBar: React.FC<NavBarProps> = ({ handleSignInPopup, handleSignUpPopup })
                 <Text className="font-['Pacifico'] hover:text-neutral-500 transition-all cursor-pointer">FAQ</Text>
                 <Text className="font-['Pacifico'] hover:text-neutral-500 transition-all cursor-pointer">About Us</Text>
                 <Text className="font-['Pacifico'] hover:text-neutral-500 transition-all cursor-pointer">Contact</Text>
+                <Text className="font-['Pacifico'] hover:text-neutral-500 transition-all cursor-pointer">Initial DB</Text>
             </View>
 
             <View className="flex items-center gap-[5px]">

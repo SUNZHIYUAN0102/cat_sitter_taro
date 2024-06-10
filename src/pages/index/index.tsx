@@ -17,8 +17,9 @@ export default function Index() {
   })
 
   return (
-    <View className='page'>
+    <View className='w-screen'>
       <NavBar handleSignInPopup={setSignInPopupVisible} handleSignUpPopup={setSignUpPopupVisible}></NavBar>
+
       <Content></Content>
 
       <SignInPopup visible={signInPopupVisible} handlePopup={setSignInPopupVisible}></SignInPopup>
