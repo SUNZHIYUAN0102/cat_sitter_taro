@@ -1,6 +1,8 @@
 import { PropsWithChildren } from 'react'
 import { useLaunch } from '@tarojs/taro'
 import './app.less'
+import { Provider } from 'react-redux'
+import { Store } from './store/store'
 
 function App({ children }: PropsWithChildren<any>) {
 
@@ -9,7 +11,9 @@ function App({ children }: PropsWithChildren<any>) {
   })
 
   // children 是将要会渲染的页面
-  return children
+  return <Provider store={Store} >
+    {children}
+  </Provider>
 }
 
 export default App

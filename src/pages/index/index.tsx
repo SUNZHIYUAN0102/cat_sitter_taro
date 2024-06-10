@@ -8,7 +8,7 @@ import { useState } from 'react'
 import SignUpPopup from './components/signUpPopup'
 
 export default function Index() {
-
+  const [category, setCategory] = useState('main')
   const [signInPopupVisible, setSignInPopupVisible] = useState(false)
   const [signUpPopupVisible, setSignUpPopupVisible] = useState(false)
 
@@ -16,11 +16,20 @@ export default function Index() {
     console.log('Page loaded.')
   })
 
+  const handleCategoryRender = (): JSX.Element => {
+    switch (category) {
+      case 'main':
+        return <Content></Content>
+      default:
+        return <Content></Content>
+    }
+  }
+
   return (
     <View className='w-screen'>
       <NavBar handleSignInPopup={setSignInPopupVisible} handleSignUpPopup={setSignUpPopupVisible}></NavBar>
 
-      <Content></Content>
+      {handleCategoryRender()}
 
       <SignInPopup visible={signInPopupVisible} handlePopup={setSignInPopupVisible}></SignInPopup>
       <SignUpPopup visible={signUpPopupVisible} handlePopup={setSignUpPopupVisible}></SignUpPopup>

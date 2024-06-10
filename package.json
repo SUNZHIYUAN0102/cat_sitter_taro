@@ -39,6 +39,7 @@
   "author": "",
   "dependencies": {
     "@babel/runtime": "^7.21.5",
+    "@reduxjs/toolkit": "^2.2.5",
     "@tarojs/components": "3.6.22",
     "@tarojs/helper": "3.6.22",
     "@tarojs/plugin-framework-react": "3.6.22",
@@ -55,7 +56,11 @@
     "@tarojs/taro": "3.6.22",
     "axios": "^1.7.2",
     "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "react-dom": "^18.0.0",
+    "react-redux": "^9.1.2",
+    "redux": "^5.0.1",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^3.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.8.0",
