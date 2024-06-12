@@ -1,4 +1,6 @@
+import { ClientDto } from "@/apis/client";
 import { createSlice } from "@reduxjs/toolkit";
+import Taro from "@tarojs/taro";
 
 interface UserState {
     name: string;
@@ -6,10 +8,12 @@ interface UserState {
     token: string;
 }
 
+let user = Taro.getStorageSync('user');
+
 const initialState: UserState = {
-    name: '',
-    avatar: '',
-    token: ''
+    name: user.name,
+    avatar: user.avatar,
+    token: user.token
 }
 
 export const UserSlice = createSlice({

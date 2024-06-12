@@ -1,9 +1,12 @@
+import { ClientDto, signIn } from "@/apis/client";
 import Popup from "@/components/popup";
 import { setUser } from "@/store/slices/user/user";
 import { AppDispatch } from "@/store/store";
 import emailValidate from "@/utils/emailValidate";
 import passwordValidate from "@/utils/passwordValidate";
 import { Input, View, Text } from "@tarojs/components";
+import Taro from "@tarojs/taro";
+import e from "express";
 import { PropsWithChildren, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
@@ -48,14 +51,35 @@ const SignInPopup: React.FC<SignInPopupProps> = ({ visible, handlePopup }) => {
         setPasswordError('');
     }, [visible])
 
-    const handleSignIn = () => {        
-        dispatch(setUser({
-            name: 'littleyuanyuan',
-            avatar: 'https://picsum.photos/id/1/40/40',
-            token: "123"
-        }))
+    const handleSignIn = async () => {
+        if (!handleEmailValidate(email) || !handlePasswordValidate(password)) {
+            return;
+        }
 
-        handlePopup(false)
+        try {
+            let res = await signIn({
+                email,
+                password
+            });
+
+            let data: ClientDto = res.data;
+
+            Taro.setStorageSync('user', {
+                name: data.username,
+                avatar: data.avatar,
+                token: data.clientId
+            })
+
+            dispatch(setUser({
+                name: data.username,
+                avatar: data.avatar,
+                token: data.clientId
+            }))
+
+            handlePopup(false)
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     return <Popup visible={visible} handlePopup={handlePopup}>
