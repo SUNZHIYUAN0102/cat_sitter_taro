@@ -3,8 +3,37 @@ import { useLoad } from '@tarojs/taro'
 import './index.less'
 import NavBar from '../index/components/navbar'
 import Taro from '@tarojs/taro'
+import { ServiceResponseDto, getServiceRequest } from '@/apis/request'
+import { useState } from 'react'
+import { CatDto } from '@/apis/cat'
+import { ServiceDto } from '@/apis/service'
 
 export default function RequestDetailPage() {
+  const params = Taro.getCurrentInstance().router!.params
+
+  const [date, setDate] = useState("")
+  const [cats, setCats] = useState<Array<CatDto>>([])
+  const [services, setServices] = useState<Array<ServiceDto>>([])
+  const [price, setPrice] = useState("")
+
+  useLoad(() => {
+    handleServiceRequestQuery()
+  })
+
+  const handleServiceRequestQuery = async () => {
+    try {
+      let res = await getServiceRequest(params.requestId!)
+
+      let data: ServiceResponseDto = res.data
+      setDate(data.date)
+      setCats(data.cats)
+      setServices(data.services)
+      setPrice(data.price.toString())
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   const toOrderPage = () => {
     Taro.redirectTo({
@@ -21,36 +50,27 @@ export default function RequestDetailPage() {
             <View className='font-bold text-[22px]'>Request Detail</View>
             <View className='w-[100%] flex items-center gap-[10px]'>
               <Text className='text-[18px]'>Date:</Text>
-              <Text className='text-[12px]'>2021-10-10</Text>
+              <Text className='text-[12px]'>{date}</Text>
             </View>
             <View className='w-[100%] flex items-center gap-[10px]'>
               <Text className='text-[18px]'>Cats:</Text>
               <View className='flex-1 flex flex-wrap gap-[5px]'>
-                <Image className='w-[25px] h-[25px] rounded-full' src="https://picsum.photos/id/40/40/40"></Image>
-                <Image className='w-[25px] h-[25px] rounded-full' src="https://picsum.photos/id/40/40/40"></Image>
-                <Image className='w-[25px] h-[25px] rounded-full' src="https://picsum.photos/id/40/40/40"></Image>
-                <Image className='w-[25px] h-[25px] rounded-full' src="https://picsum.photos/id/40/40/40"></Image>
-                <Image className='w-[25px] h-[25px] rounded-full' src="https://picsum.photos/id/40/40/40"></Image>
-                <Image className='w-[25px] h-[25px] rounded-full' src="https://picsum.photos/id/40/40/40"></Image>
-                <Image className='w-[25px] h-[25px] rounded-full' src="https://picsum.photos/id/40/40/40"></Image>
-                <Image className='w-[25px] h-[25px] rounded-full' src="https://picsum.photos/id/40/40/40"></Image>
-                <Image className='w-[25px] h-[25px] rounded-full' src="https://picsum.photos/id/40/40/40"></Image>
-                <Image className='w-[25px] h-[25px] rounded-full' src="https://picsum.photos/id/40/40/40"></Image>
+                {cats.map((item) => {
+                  return <Image key={item.id} className='w-[25px] h-[25px] rounded-full' src={item.photo}></Image>
+                })}
               </View>
             </View>
             <View className='w-[100%] flex items-center gap-[10px]'>
               <Text className='text-[18px]'>Services:</Text>
               <View className='flex-1 flex flex-wrap gap-[5px]'>
-                <View className="px-[5px] py-[5px] bg-orange-200 text-white rounded-sm text-[10px]">Feed Cat</View>
-                <View className="px-[5px] py-[5px] bg-orange-200 text-white rounded-sm text-[10px]">Feed Cat</View>
-                <View className="px-[5px] py-[5px] bg-orange-200 text-white rounded-sm text-[10px]">Feed Cat</View>
-                <View className="px-[5px] py-[5px] bg-orange-200 text-white rounded-sm text-[10px]">Feed Cat</View>
-                <View className="px-[5px] py-[5px] bg-orange-200 text-white rounded-sm text-[10px]">Feed Cat</View>
+                {services.map((item) => {
+                  return <View key={item.id} className="px-[5px] py-[5px] bg-orange-200 text-white rounded-sm text-[10px]">{item.name}</View>
+                })}
               </View>
             </View>
             <View className='w-[100%] flex items-center gap-[10px]'>
               <Text className='text-[18px]'>Price:</Text>
-              <Text className='text-[12px]'>$200.00</Text>
+              <Text className='text-[12px]'>${price}</Text>
             </View>
           </View>
 

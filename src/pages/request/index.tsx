@@ -5,7 +5,7 @@ import Taro, { useLoad } from "@tarojs/taro";
 import { ServiceDto, getServices } from "@/apis/service";
 import { useEffect, useState } from "react";
 import { CatDto, getCats } from "@/apis/cat";
-import { postServiceRequest } from "@/apis/request";
+import { ServiceResponseDto, postServiceRequest } from "@/apis/request";
 
 interface SelectionService extends ServiceDto {
     selected: boolean
@@ -90,9 +90,9 @@ export default function RequestPage() {
         setPrice(total * catAmount)
     }, [serviceList, catList])
 
-    const toRequestDetailPage = () => {
+    const toRequestDetailPage = (requestId: string) => {
         Taro.redirectTo({
-            url: 'pages/requestDetail/index'
+            url: `pages/requestDetail/index?requestId=${requestId}`
         })
     }
 
@@ -105,7 +105,8 @@ export default function RequestPage() {
                 serviceids: serviceList.filter((item) => item.selected).map((item) => item.id)
             })
 
-            console.log(res.data);
+            let data: ServiceResponseDto = res.data
+            toRequestDetailPage(data.requestid)
         } catch (error) {
             console.log(error);
         }
