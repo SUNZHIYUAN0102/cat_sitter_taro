@@ -4,7 +4,7 @@ import axios from 'axios'
 export const baseURL = 'http://localhost:3000/'
 const instance = axios.create({
     baseURL,
-    timeout: 5000,
+    timeout: 10000,
 })
 
 instance.interceptors.request.use(function (config) {

@@ -65,12 +65,14 @@ const SignInPopup: React.FC<SignInPopupProps> = ({ visible, handlePopup }) => {
             let data: ClientDto = res.data;
 
             Taro.setStorageSync('user', {
+                email: email,
                 name: data.username,
                 avatar: data.avatar,
                 token: data.clientId
             })
 
             dispatch(setUser({
+                email: email,
                 name: data.username,
                 avatar: data.avatar,
                 token: data.clientId

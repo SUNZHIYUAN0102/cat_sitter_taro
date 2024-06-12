@@ -1,14 +1,114 @@
 import { View, Text, Input, Image } from "@tarojs/components";
 import Footer from "../index/components/footer";
 import NavBar from "../index/components/navbar";
-import Taro from "@tarojs/taro";
+import Taro, { useLoad } from "@tarojs/taro";
+import { ServiceDto, getServices } from "@/apis/service";
+import { useEffect, useState } from "react";
+import { CatDto, getCats } from "@/apis/cat";
+import { postServiceRequest } from "@/apis/request";
+
+interface SelectionService extends ServiceDto {
+    selected: boolean
+}
+
+interface SelectionCat extends CatDto {
+    selected: boolean
+}
 
 export default function RequestPage() {
+    const [date, setDate] = useState<string>("")
+    const [price, setPrice] = useState<number>(0)
+    const [serviceList, setServiceList] = useState<SelectionService[]>([])
+    const [catList, setCatList] = useState<SelectionCat[]>([])
+
+    useLoad(() => {
+        queryServices()
+        queryCats()
+    })
+
+    const queryServices = async () => {
+        try {
+            let res = await getServices();
+
+            let list = res.data.map((item: ServiceDto) => {
+                return { ...item, selected: false }
+            })
+
+            setServiceList(list)
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const handleServiceSelection = (id: string) => {
+        let list = serviceList.map((item) => {
+            if (item.id === id) {
+                item.selected = !item.selected
+            }
+            return item
+        })
+
+        setServiceList(list)
+    }
+
+    const queryCats = async () => {
+        try {
+            let res = await getCats(Taro.getStorageSync('user').email);
+
+            let list = res.data.map((item: CatDto) => {
+                return { ...item, selected: false }
+            })
+
+            setCatList(list)
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const handleCatSelection = (id: string) => {
+        let list = catList.map((item) => {
+            if (item.id === id) {
+                item.selected = !item.selected
+            }
+            return item
+        })
+
+        setCatList(list)
+    }
+
+    useEffect(() => {
+        let catAmount = catList.filter((item) => item.selected).length
+
+        //price calculation
+        let total = serviceList.reduce((acc, item) => {
+            if (item.selected) {
+                acc += item.price
+            }
+            return acc
+        }, 0)
+
+        setPrice(total * catAmount)
+    }, [serviceList, catList])
 
     const toRequestDetailPage = () => {
         Taro.redirectTo({
             url: 'pages/requestDetail/index'
         })
+    }
+
+    const handleRequestPost = async () => {
+        try {
+            let res = await postServiceRequest({
+                requestDate: date,
+                price: price,
+                catids: catList.filter((item) => item.selected).map((item) => item.id),
+                serviceids: serviceList.filter((item) => item.selected).map((item) => item.id)
+            })
+
+            console.log(res.data);
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     return (
@@ -20,48 +120,36 @@ export default function RequestPage() {
 
                     <View className="w-[100%] flex flex-col gap-[5px]">
                         <Text className="text-[15px]">Date:</Text>
-                        <Input className='w-[200px] border-[0.5px] border-orange-400 bg-white rounded-md p-[5px] text-[8px]' />
+                        <Input value={date} onInput={(e) => { setDate(e.detail.value) }} className='w-[200px] border-[0.5px] border-orange-400 bg-white rounded-md p-[5px] text-[8px]' />
                     </View>
 
                     <View className="w-[100%] flex flex-col gap-[5px]">
                         <Text className="text-[15px]">My Cats:</Text>
                         <View className="flex flex-wrap gap-[5px]">
-                            <View style={{ borderColor: "#EC974F" }} className="w-[40px] h-[40px] rounded-full overflow-hidden border border-transparent">
-                                <Image mode="aspectFill" className="w-[100%] h-[100%]" src="https://picsum.photos/id/40/40/40"></Image>
-                            </View>
-                            <View className="w-[40px] h-[40px] rounded-full overflow-hidden border border-transparent">
-                                <Image mode="aspectFill" className="w-[100%] h-[100%]" src="https://picsum.photos/id/40/40/40"></Image>
-                            </View>
-                            <View className="w-[40px] h-[40px] rounded-full overflow-hidden border border-transparent">
-                                <Image mode="aspectFill" className="w-[100%] h-[100%]" src="https://picsum.photos/id/40/40/40"></Image>
-                            </View>
-                            <View className="w-[40px] h-[40px] rounded-full overflow-hidden border border-transparent">
-                                <Image mode="aspectFill" className="w-[100%] h-[100%]" src="https://picsum.photos/id/40/40/40"></Image>
-                            </View>
+                            {catList.map((item) => {
+                                return <View onClick={() => { handleCatSelection(item.id) }} key={item.id} style={{ borderColor: item.selected ? "#EC974F" : "" }} className="w-[40px] h-[40px] rounded-full overflow-hidden border border-transparent">
+                                    <Image mode="aspectFill" className="w-[100%] h-[100%]" src={item.photo}></Image>
+                                </View>
+                            })}
                         </View>
                     </View>
 
                     <View className="w-[100%] flex flex-col gap-[5px]">
                         <Text className="text-[15px]">Available Services:</Text>
                         <View className="flex flex-wrap gap-[5px]">
-                            <View style={{ background: "#EC974F", color: "white" }} className="px-[5px] py-[5px] bg-white rounded-sm text-[10px]">Feed Cat</View>
-                            <View className="px-[5px] py-[5px] bg-white rounded-sm text-[10px]">Feed Cat</View>
-                            <View className="px-[5px] py-[5px] bg-white rounded-sm text-[10px]">Feed Cat</View>
-                            <View className="px-[5px] py-[5px] bg-white rounded-sm text-[10px]">Feed Cat</View>
-                            <View className="px-[5px] py-[5px] bg-white rounded-sm text-[10px]">Feed Cat</View>
-                            <View className="px-[5px] py-[5px] bg-white rounded-sm text-[10px]">Feed Cat</View>
-                            <View className="px-[5px] py-[5px] bg-white rounded-sm text-[10px]">Feed Cat</View>
-                            <View className="px-[5px] py-[5px] bg-white rounded-sm text-[10px]">Feed Cat</View>
+                            {serviceList.map((item) => {
+                                return <View onClick={(() => { handleServiceSelection(item.id) })} key={item.id} style={{ background: item.selected ? "#EC974F" : "", color: item.selected ? "white" : "" }} className="px-[5px] py-[5px] bg-white rounded-sm text-[10px]">{item.name}</View>
+                            })}
                         </View>
                     </View>
 
                     <View className="w-[100%] flex items-center gap-[5px]">
                         <Text className="text-[15px]">Price:</Text>
-                        <Text className="text-[20px] text-orange-400">$38.78</Text>
+                        <Text className="text-[20px] text-orange-400">${price}</Text>
                     </View>
 
                     <View className="w-[100%] flex justify-center">
-                        <View onClick={toRequestDetailPage} className="bg-orange-400 p-[8px] rounded-lg text-white text-[12px] font-bold cursor-pointer">
+                        <View onClick={handleRequestPost} className="bg-orange-400 p-[8px] rounded-lg text-white text-[12px] font-bold cursor-pointer">
                             Submit Request
                         </View>
                     </View>

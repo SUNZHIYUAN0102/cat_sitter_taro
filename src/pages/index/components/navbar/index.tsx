@@ -6,6 +6,7 @@ import SignInPopup from "../signInPopup";
 import SignUpPopup from "../signUpPopup";
 import { useState } from "react";
 import Taro from "@tarojs/taro";
+import { initialDB } from "@/apis/seed";
 
 interface NavBarProps {
 
@@ -42,6 +43,16 @@ const NavBar: React.FC<NavBarProps> = () => {
         })
     }
 
+    const handleDBInit = async () => {
+        try {
+            let res = await initialDB()
+
+            console.log(res.data);
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
     return <View className="sticky top-0 w-[100%] h-[50px] bg-white px-[10%] flex justify-between items-center z-50">
         <Image onClick={toMainPage} className="w-[110px] h-[25px] cursor-pointer" src={icon}></Image>
 
@@ -52,7 +63,7 @@ const NavBar: React.FC<NavBarProps> = () => {
                 <Text className="font-['Pacifico'] hover:text-neutral-500 transition-all cursor-pointer">FAQ</Text>
                 <Text className="font-['Pacifico'] hover:text-neutral-500 transition-all cursor-pointer">About Us</Text>
                 <Text className="font-['Pacifico'] hover:text-neutral-500 transition-all cursor-pointer">Contact</Text>
-                <Text className="font-['Pacifico'] hover:text-neutral-500 transition-all cursor-pointer">Initial DB</Text>
+                <Text onClick={handleDBInit} className="font-['Pacifico'] hover:text-neutral-500 transition-all cursor-pointer">Initial DB</Text>
             </View>
         </View>
 
