@@ -8,12 +8,20 @@ import { useState } from 'react'
 import { CatDto } from '@/apis/cat'
 import { ServiceDto } from '@/apis/service'
 
+export interface SitterDto {
+  id: string
+  name: string
+  gender: string
+  avatar: string
+}
+
 export default function RequestDetailPage() {
   const params = Taro.getCurrentInstance().router!.params
 
   const [date, setDate] = useState("")
   const [cats, setCats] = useState<Array<CatDto>>([])
   const [services, setServices] = useState<Array<ServiceDto>>([])
+  const [sitters, setSitters] = useState<Array<SitterDto>>([])
   const [price, setPrice] = useState("")
 
   useLoad(() => {
@@ -28,6 +36,7 @@ export default function RequestDetailPage() {
       setDate(data.date)
       setCats(data.cats)
       setServices(data.services)
+      setSitters(data.sitters)
       setPrice(data.price.toString())
 
     } catch (error) {
@@ -78,10 +87,10 @@ export default function RequestDetailPage() {
             <View className='font-bold text-[22px]'>Responded Sitters</View>
             <View className='flex-1 w-[100%] overflow-hidden'>
               <ScrollView className='flex flex-col gap-[10px]' style={{ height: "100%" }} enableFlex scrollY>
-                {[1, 2, 3, 45, 6, 7, 8, 1, 2, 3, 4].map(() => {
-                  return <View className='flex justify-between items-center'>
-                    <Image className='w-[25px] h-[25px] rounded-full' src="https://picsum.photos/id/40/40/40"></Image>
-                    <Text className='flex-1 mx-[10px] text-[12px] truncate'>Jane Doe</Text>
+                {sitters.map((item) => {
+                  return <View key={item.id} className='flex justify-between items-center'>
+                    <Image className='w-[25px] h-[25px] rounded-full' src={item.avatar}></Image>
+                    <Text className='flex-1 mx-[10px] text-[12px] truncate'>{item.name}</Text>
                     <View onClick={toOrderPage} className='p-[5px] rounded-sm bg-orange-400 flex justify-center items-center text-[10px] text-white'>
                       Confirm
                     </View>

@@ -1,6 +1,7 @@
 import request from "@/utils/request"
 import { CatDto } from "./cat"
 import { ServiceDto } from "./service"
+import { SitterDto } from "@/pages/requestDetail"
 
 export interface ServiceRequestDto {
     requestDate: string,
@@ -16,6 +17,7 @@ export interface ServiceResponseDto {
     price: number,
     requestid: string,
     services: Array<ServiceDto>,
+    sitters: Array<SitterDto>
     status: string
 }
 

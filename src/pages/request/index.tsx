@@ -97,6 +97,8 @@ export default function RequestPage() {
     }
 
     const handleRequestPost = async () => {
+        if (date === "" || price === 0) return
+
         try {
             let res = await postServiceRequest({
                 requestDate: date,
@@ -150,7 +152,7 @@ export default function RequestPage() {
                     </View>
 
                     <View className="w-[100%] flex justify-center">
-                        <View onClick={handleRequestPost} className="bg-orange-400 p-[8px] rounded-lg text-white text-[12px] font-bold cursor-pointer">
+                        <View style={{ opacity: (date === "" || price === 0) ? "70%" : "" }} onClick={handleRequestPost} className="bg-orange-400 p-[8px] rounded-lg text-white text-[12px] font-bold cursor-pointer">
                             Submit Request
                         </View>
                     </View>
