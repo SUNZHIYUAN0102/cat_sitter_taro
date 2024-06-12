@@ -7,6 +7,7 @@ import { ServiceResponseDto, getServiceRequest } from '@/apis/request'
 import { useState } from 'react'
 import { CatDto } from '@/apis/cat'
 import { ServiceDto } from '@/apis/service'
+import { postOrder } from '@/apis/order'
 
 export interface SitterDto {
   id: string
@@ -15,13 +16,17 @@ export interface SitterDto {
   avatar: string
 }
 
+interface availableSitter extends SitterDto {
+  available: boolean
+}
+
 export default function RequestDetailPage() {
   const params = Taro.getCurrentInstance().router!.params
 
   const [date, setDate] = useState("")
   const [cats, setCats] = useState<Array<CatDto>>([])
   const [services, setServices] = useState<Array<ServiceDto>>([])
-  const [sitters, setSitters] = useState<Array<SitterDto>>([])
+  const [sitters, setSitters] = useState<Array<availableSitter>>([])
   const [price, setPrice] = useState("")
 
   useLoad(() => {
@@ -36,7 +41,9 @@ export default function RequestDetailPage() {
       setDate(data.date)
       setCats(data.cats)
       setServices(data.services)
-      setSitters(data.sitters)
+      setSitters(data.sitters.map((item) => {
+        return { ...item, available: true }
+      }))
       setPrice(data.price.toString())
 
     } catch (error) {
@@ -44,9 +51,43 @@ export default function RequestDetailPage() {
     }
   }
 
-  const toOrderPage = () => {
+  const handleConfirmSitter = (sitter: availableSitter) => {
+    if (!sitter.available) {
+      return
+    }
+
+    handleOrderCreation(sitter.id)
+  }
+
+  const handleOrderCreation = async (sitterId) => {
+    try {
+      let res = await postOrder({ requestid: params.requestId, sitterid: sitterId })
+
+      toOrderPage(res.data.orderid)
+    } catch (error) {
+      console.log(error);
+
+      Taro.showToast({
+        title: "Sitter is not available",
+        icon: "none"
+      })
+
+      if (error.response.status == "401") {
+        sitters.map((item) => {
+          if (item.id === sitterId) {
+            item.available = false
+          }
+          return item
+        })
+
+        setSitters([...sitters])
+      }
+    }
+  }
+
+  const toOrderPage = (orderId) => {
     Taro.redirectTo({
-      url: 'pages/order/index'
+      url: `pages/order/index?orderId=${orderId}`
     })
   }
 
@@ -91,7 +132,7 @@ export default function RequestDetailPage() {
                   return <View key={item.id} className='flex justify-between items-center'>
                     <Image className='w-[25px] h-[25px] rounded-full' src={item.avatar}></Image>
                     <Text className='flex-1 mx-[10px] text-[12px] truncate'>{item.name}</Text>
-                    <View onClick={toOrderPage} className='p-[5px] rounded-sm bg-orange-400 flex justify-center items-center text-[10px] text-white'>
+                    <View style={{ opacity: item.available ? "" : "70%" }} onClick={() => { handleConfirmSitter(item) }} className='p-[5px] rounded-sm bg-orange-400 flex justify-center items-center text-[10px] text-white'>
                       Confirm
                     </View>
                   </View>
