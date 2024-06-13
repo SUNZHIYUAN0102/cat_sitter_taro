@@ -4,6 +4,8 @@ export default defineAppConfig({
     'pages/request/index',
     'pages/requestDetail/index',
     'pages/order/index',
+    'pages/report1/index',
+    'pages/report2/index',
   ],
   window: {
     backgroundTextStyle: 'light',

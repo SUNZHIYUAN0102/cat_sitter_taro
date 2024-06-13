@@ -6,7 +6,7 @@ import SignInPopup from "../signInPopup";
 import SignUpPopup from "../signUpPopup";
 import { useState } from "react";
 import Taro from "@tarojs/taro";
-import { initialDB } from "@/apis/seed";
+import { initialDB, migrateMongo } from "@/apis/seed";
 
 interface NavBarProps {
 
@@ -53,6 +53,28 @@ const NavBar: React.FC<NavBarProps> = () => {
         }
     }
 
+    const handleMigration = async () => {
+        try {
+            let res = await migrateMongo()
+
+            console.log(res.data);
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    const toReport1 = () => {
+        Taro.redirectTo({
+            url: '/pages/report1/index'
+        })
+    }
+
+    const toReport2 = () => {
+        Taro.redirectTo({
+            url: '/pages/report2/index'
+        })
+    }
+
     return <View className="sticky top-0 w-[100%] h-[50px] bg-white px-[10%] flex justify-between items-center z-50">
         <Image onClick={toMainPage} className="w-[110px] h-[25px] cursor-pointer" src={icon}></Image>
 
@@ -61,9 +83,11 @@ const NavBar: React.FC<NavBarProps> = () => {
                 <Text className="font-['Pacifico'] hover:text-neutral-500 transition-all cursor-pointer">How it works</Text>
                 <Text className="font-['Pacifico'] hover:text-neutral-500 transition-all cursor-pointer">Blog</Text>
                 <Text className="font-['Pacifico'] hover:text-neutral-500 transition-all cursor-pointer">FAQ</Text>
-                <Text className="font-['Pacifico'] hover:text-neutral-500 transition-all cursor-pointer">About Us</Text>
                 <Text className="font-['Pacifico'] hover:text-neutral-500 transition-all cursor-pointer">Contact</Text>
+                <Text onClick={toReport1} className="font-['Pacifico'] hover:text-neutral-500 transition-all cursor-pointer">Report1</Text>
+                <Text onClick={toReport2} className="font-['Pacifico'] hover:text-neutral-500 transition-all cursor-pointer">Report2</Text>
                 <Text onClick={handleDBInit} className="font-['Pacifico'] hover:text-neutral-500 transition-all cursor-pointer">Initial DB</Text>
+                <Text onClick={handleMigration} className="font-['Pacifico'] hover:text-neutral-500 transition-all cursor-pointer">Migrate Mongo</Text>
             </View>
         </View>
 
