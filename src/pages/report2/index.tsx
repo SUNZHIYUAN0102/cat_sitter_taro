@@ -2,12 +2,37 @@ import { View, Text, Image } from '@tarojs/components'
 import { useLoad } from '@tarojs/taro'
 import './index.less'
 import Navbar from '../index/components/navbar'
+import { getReport2 } from '@/apis/report'
+import { useState } from 'react'
+
+interface Report2Props {
+  conversion_rate: string
+  order_count: string
+  request_count: string
+  sitter_avatar: string
+  sitter_gender: string
+  sitter_name: string
+}
 
 export default function Report2() {
 
+  const [report2List, setReport2List] = useState<Array<Report2Props>>([])
+
   useLoad(() => {
-    console.log('Page loaded.')
+    handleReport2Query()
   })
+
+  const handleReport2Query = async () => {
+    try {
+      let res = await getReport2()
+
+      setReport2List(res.data)
+
+      console.log(res);
+    } catch (e) {
+      console.log(e)
+    }
+  }
 
   return (
     <View className='page'>
@@ -23,17 +48,19 @@ export default function Report2() {
           <View className='flex-1 flex justify-center text-[12px] truncate'>Conversion rate</View>
         </View>
 
-        <View className='flex items-center'>
-          <View className='flex-[0.5] flex justify-center text-[12px] truncate'>1</View>
-          <View className='flex-1 flex justify-center text-[12px] truncate'>Zhiyuan Sun</View>
-          <View className='flex-1 flex justify-center text-[12px] truncate'>NAN</View>
-          <View className='flex-1 flex justify-center truncate'>
-            <Image className='w-[14px] h-[14px] rounded-full' src="https://6472-dream-party-online-6d9jtce38e6b1-1302634362.tcb.qcloud.la/didi_party/app_pictures/cats/1.png"></Image>
+        {report2List.map((item, index) => {
+          return <View key={index} className='flex items-center'>
+            <View className='flex-[0.5] flex justify-center text-[12px] truncate'>{index}</View>
+            <View className='flex-1 flex justify-center text-[12px] truncate'>{item.sitter_name}</View>
+            <View className='flex-1 flex justify-center text-[12px] truncate'>{item.sitter_gender}</View>
+            <View className='flex-1 flex justify-center truncate'>
+              <Image className='w-[14px] h-[14px] rounded-full' src={item.sitter_avatar}></Image>
+            </View>
+            <View className='flex-1 flex justify-center text-[12px] truncate'>{item.order_count}</View>
+            <View className='flex-1 flex justify-center text-[12px] truncate'>{item.request_count}</View>
+            <View className='flex-1 flex justify-center text-[12px] truncate'>{(parseFloat(item.conversion_rate) * 100).toFixed(2)}%</View>
           </View>
-          <View className='flex-1 flex justify-center text-[12px] truncate'>100</View>
-          <View className='flex-1 flex justify-center text-[12px] truncate'>200</View>
-          <View className='flex-1 flex justify-center text-[12px] truncate'>50%</View>
-        </View>
+        })}
       </View>
     </View>
   )
