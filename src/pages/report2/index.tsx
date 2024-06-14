@@ -40,17 +40,17 @@ export default function Report2() {
       <View style={{ background: "#f4f4f4" }} className='py-[20px] flex flex-col gap-[5px]'>
         <View className='flex items-center'>
           <View className='flex-[0.5] flex justify-center text-[12px] truncate'>#</View>
-          <View className='flex-1 flex justify-center text-[12px] truncate'>Sitter name</View>
-          <View className='flex-1 flex justify-center text-[12px] truncate'>Sitter gender</View>
-          <View className='flex-1 flex justify-center text-[12px] truncate'>Sitter avatar</View>
-          <View className='flex-1 flex justify-center text-[12px] truncate'>Order count</View>
-          <View className='flex-1 flex justify-center text-[12px] truncate'>Request count</View>
-          <View className='flex-1 flex justify-center text-[12px] truncate'>Conversion rate</View>
+          <View className='flex-1 flex justify-center text-[12px] truncate'>Sitter Name</View>
+          <View className='flex-1 flex justify-center text-[12px] truncate'>Sitter Gender</View>
+          <View className='flex-1 flex justify-center text-[12px] truncate'>Sitter Avatar</View>
+          <View className='flex-1 flex justify-center text-[12px] truncate'>Order Count</View>
+          <View className='flex-1 flex justify-center text-[12px] truncate'>Request Count</View>
+          <View className='flex-1 flex justify-center text-[12px] truncate'>Conversion Rate</View>
         </View>
 
         {report2List.map((item, index) => {
           return <View key={index} className='flex items-center'>
-            <View className='flex-[0.5] flex justify-center text-[12px] truncate'>{index}</View>
+            <View className='flex-[0.5] flex justify-center text-[12px] truncate'>{index + 1}</View>
             <View className='flex-1 flex justify-center text-[12px] truncate'>{item.sitter_name}</View>
             <View className='flex-1 flex justify-center text-[12px] truncate'>{item.sitter_gender}</View>
             <View className='flex-1 flex justify-center truncate'>
