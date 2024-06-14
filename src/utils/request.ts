@@ -1,10 +1,9 @@
-import Taro from '@tarojs/taro'
 import axios from 'axios'
 
-export const baseURL = 'http://localhost:3000/'
+export const baseURL = 'https://purrsitter.azurewebsites.net/'
 const instance = axios.create({
     baseURL,
-    timeout: 10000,
+    timeout: 100000,
 })
 
 instance.interceptors.request.use(function (config) {

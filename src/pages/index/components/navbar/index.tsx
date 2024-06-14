@@ -1,12 +1,13 @@
 import { View, Image, Text } from "@tarojs/components";
 import icon from "@/resources/icon.svg"
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import SignInPopup from "../signInPopup";
 import SignUpPopup from "../signUpPopup";
 import { useState } from "react";
 import Taro from "@tarojs/taro";
 import { initialDB, migrateMongo } from "@/apis/seed";
+import { clearUser } from "@/store/slices/user/user";
 
 interface NavBarProps {
 
@@ -14,6 +15,8 @@ interface NavBarProps {
 
 const NavBar: React.FC<NavBarProps> = () => {
     const user = useSelector((state: RootState) => state.user)
+
+    const dispatch = useDispatch()
 
     const [signInPopupVisible, setSignInPopupVisible] = useState(false)
     const [signUpPopupVisible, setSignUpPopupVisible] = useState(false)
@@ -57,7 +60,13 @@ const NavBar: React.FC<NavBarProps> = () => {
         try {
             let res = await migrateMongo()
 
-            console.log(res.data);
+            Taro.clearStorageSync();
+            dispatch(clearUser())
+
+            Taro.reLaunch({
+                url: '/pages/index/index'
+            })
+
         } catch (e) {
             console.log(e)
         }
